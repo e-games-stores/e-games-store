@@ -1,21 +1,20 @@
-const CACHE_NAME = 'egames-v1'; // Actualizado para E-Games Store
+const CACHE_NAME = 'egames-v2'; 
 const ASSETS = [
   './',
   './index.html',
-  './manifest.json',
-  './imagenes/logo-app.png'
+  './manifest.json'
 ];
 
-// Instalación
+// Instalación: Guardamos lo esencial sin bloquear si falta algún extra
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
+      return cache.addAll(ASSETS).catch(err => console.log('Error caché inicial:', err));
     }).then(() => self.skipWaiting()) 
   );
 });
 
-// Activación: Borra absolutamente todo lo viejo
+// Activación: Borra versiones viejas de caché
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
@@ -30,11 +29,19 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Estrategia de red: Priorizar Red para archivos nuevos, Caché para el resto
+// Estrategia: Buscar primero en la red, si no hay conexión, usar caché
 self.addEventListener('fetch', (e) => {
+  // Ignoramos peticiones que no sean GET (como extensiones o analíticas)
+  if (e.request.method !== 'GET') return;
+
   e.respondWith(
-    fetch(e.request).catch(() => {
-      return caches.match(e.request);
-    })
+    fetch(e.request)
+      .then((response) => {
+        // Opcional: podrías clonar y guardar en caché dinámicamente si querés
+        return response;
+      })
+      .catch(() => {
+        return caches.match(e.request);
+      })
   );
 });
