@@ -1,0 +1,20 @@
+{
+  "name": "E-GAMES STORE",
+  "short_name": "E-Games",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#13c1ac",
+  "icons": [
+    {
+      "src": "imagenes/logo-app.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "imagenes/logo-app.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
